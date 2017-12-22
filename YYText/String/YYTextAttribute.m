@@ -407,26 +407,32 @@ YYTextAttributeType YYTextAttributeGetType(NSString *name){
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     NSData *data = nil;
+    NSData *userInfoData = nil;
     @try {
         data = [YYTextArchiver archivedDataWithRootObject:self.attributes];
+        userInfoData = [YYTextArchiver archivedDataWithRootObject:self.userInfo];
     }
     @catch (NSException *exception) {
         NSLog(@"%@",exception);
     }
     [aCoder encodeObject:data forKey:@"attributes"];
+    [aCoder encodeObject:userInfoData forKey:@"userInfo"];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super init];
     NSData *data = [aDecoder decodeObjectForKey:@"attributes"];
+    NSData *userInfoData = [aDecoder decodeObjectForKey:@"userInfo"];
     @try {
         _attributes = [YYTextUnarchiver unarchiveObjectWithData:data];
+        _userInfo = [YYTextUnarchiver unarchiveObjectWithData:userInfoData];
     }
     @catch (NSException *exception) {
         NSLog(@"%@",exception);
     }
     return self;
 }
+
 
 - (id)copyWithZone:(NSZone *)zone {
     typeof(self) one = [self.class new];
